@@ -23,7 +23,7 @@ from tkinter import filedialog
 
 ## Set the API key and model name
 
-API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxx"
+API_KEY = "xxxxxxx"
 
 GPT_MODEL="gpt-4o-mini"
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", API_KEY))
@@ -220,6 +220,11 @@ def select_folder():
 def main():
     st.title("AI Audio Audit App")
     st.write("Upload an audio file and convert it to text.")
+    
+    # Variable to storage data
+    # folderWithDate=""
+    zipfilename=""
+    fp=""
 
     def uploader_callback():
         print('Uploaded file')
@@ -300,6 +305,12 @@ def main():
              print("The error is: ",e)
              f.write("The error is: "+ str(e))
              f.close()
+             
+    btn = st.download_button(
+          label="Download ZIP",
+          data=fp,
+          file_name=zipfilename+".zip",
+          mime="application/octet-stream")
    
 
 if __name__ == "__main__":

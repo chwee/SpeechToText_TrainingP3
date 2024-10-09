@@ -16,13 +16,13 @@ import pandas as pd
 import tkinter as tk
 from tkinter import filedialog
 
-
+import shutil
 
 #parameter for openai
 
 
 ## Set the API key and model name Groq
-GROQ_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+GROQ_API_KEY="XXXXXXXX" 
 client = Groq(api_key= GROQ_API_KEY)
 
 
@@ -90,9 +90,9 @@ def speech_to_text(audio_file):
     print(transcription.text)
     
     messages=[
-        {"role": "system", "content":"""You are generating a transcript with speakers label. The audio is the conversation between a telemarketer and customer. Out the transcription in a dialogue format with speaker label. If the consersation is in other languages, translate to english transcript with speakers label."""},
+        {"role": "system", "content":f"""You are generating a transcript with speakers label. The audio is the conversation between a telemarketer and customer. Out the transcription in a dialogue format with speaker label. If the consersation is in other languages, translate to english transcript with speakers label."""},
         {"role": "user", "content": [
-            {"type": "text", "text": f"The audio transcription is: {transcription.text}"}
+            {"type": "text", "text": f"""The audio transcription is: {transcription.text}"""}
             ],
         }
         ]
@@ -236,6 +236,11 @@ def select_folder():
 def main():
     st.title("AI Audio Audit App")
     st.write("Upload an audio file and convert it to text.")
+    
+    #Variable to storage data
+    # folderWithDate=""
+    zipfilename=""
+    fp=""
 
     def uploader_callback():
         print('Uploaded file')
@@ -311,11 +316,23 @@ def main():
                  f.write(str(endtime))
                  
             f.close()
+            
+             #zip the directory with files for download
+            zipfilename = str(timestamp)
+            shutil.make_archive(".//tmp//"+ zipfilename, 'zip', folderWithDate)
+            fp = open(".//tmp//"+ zipfilename+".zip", "rb")
+
         except Exception as e:
              # By this way we can know about the type of error occurring
              print("The error is: ",e)
              f.write("The error is: "+ str(e))
              f.close()
+             
+    btn = st.download_button(
+          label="Download ZIP",
+          data=fp,
+          file_name=zipfilename+".zip",
+          mime="application/octet-stream")
    
 
 if __name__ == "__main__":
